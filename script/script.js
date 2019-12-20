@@ -1,6 +1,7 @@
 /* -------------------DECLARACIONES DE VARIABLES GLOBALES---------------------------- *\
 /* -------------------TRAER ELEMENTOS DEL DOM E IMAGENES----------------------------- */
 var BOX = document.getElementsByClassName("box");
+var CONT_BOX = document.getElementsByClassName("container__game");
 var tablero = document.getElementById("tablero");
 var contexto = tablero.getContext("2d");
 var emoji = {
@@ -45,16 +46,17 @@ var random = [];
 var posicion; //"coordenadas" del click
 var activos = 0; //tarjetas visibles
 var tarjetasActivas = [,]; // Memoria para tarjetas visibles
+var siguienteBox = false;
+var mach = 0;
 
 /* -------------------FIN DECLARACION DE VARIABLES---------------------------------*/
 
-/* -------------------UBICACION RANDOM DE LAS IMAGENES---------------------------*/
-
+/* -------------------UBICACION RANDOM DE LAS IMAGENES---------------------------*\
+/---------------------SE HACE EN DOS PARTES 32 y 32------------------------------*/
 for (let i = 0; i < 32; i++) {
   random[i] = Math.floor(Math.random() * 32);
   for (let x = 0; x < random.length; x++) {
     if (random[i] == random[x] && i != x) {
-      console.log("Son iguales");
       x = random.length;
       i--;
     }
@@ -65,7 +67,6 @@ for (let i = 32; i < 64; i++) {
   random[i] = Math.floor(Math.random() * 32);
   for (let x = 32; x < random.length; x++) {
     if (random[i] == random[x] && i != x) {
-      console.log("Son iguales");
       x = random.length;
       i--;
     }
@@ -76,18 +77,28 @@ for (let i = 32; i < 64; i++) {
 /* -------------------ESCUCHA DE LOS DISTINTOS BOX---------------------------- */
 for (let i = 0; i < 64; i++) {
   BOX[i].addEventListener("click", () => {
-    if (!BOX[i].classList.contains("boxActivo")) {
+    if (!BOX[i].classList.contains("boxActivo") && siguienteBox === false) {
       //¿No contiene la clase boxActivo?
       posicion = i;
-      if (activos <= 1) {
+      if (activos < 2) {
         activar();
         tarjetasActivas[activos] = posicion;
         activos++;
         crearEmoji();
-      } else if (random[tarjetasActivas[0]] === random[tarjetasActivas[1]]) {
-        activos = 0;
-      } else {
-        seleccionEliminar();
+        if (
+          random[tarjetasActivas[0]] === random[tarjetasActivas[1]] &&
+          activos === 2
+        ) {
+          BOX[tarjetasActivas[0]].classList.add("boxCoincidencia");
+          BOX[tarjetasActivas[1]].classList.add("boxCoincidencia");
+          activos = 0;
+          mach++;
+          gameOver();
+          //Lanzar funcion de Exito(coincidencia) y cuantificar a 32 IMG
+        } else if (activos === 2) {
+          siguienteBox = true;
+          setTimeout(seleccionEliminar, 500);
+        }
       }
     }
   });
@@ -99,6 +110,7 @@ function seleccionEliminar() {
     descativar();
   }
   activos = 0;
+  siguienteBox = false;
 }
 
 function descativar() {
@@ -118,6 +130,11 @@ function crearEmoji() {
 function cargarEmoji() {
   emoji.cargaOK = true;
   dibujar();
+}
+function gameOver() {
+  if (mach === 32) {
+    CONT_BOX[0].classList.add("winner");
+  }
 }
 
 function dibujar() {

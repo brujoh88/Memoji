@@ -3,9 +3,13 @@ body {
   height: 100vh;
   display: flex;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
+  flex-direction: column;
 }
-.container__header {
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 canvas {
   position: absolute;
@@ -14,6 +18,12 @@ canvas {
 .container__game {
   display: grid;
   grid-template: repeat(8, 100px) / repeat(8, 100px);
+}
+.winner {
+  animation: win 1s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  will-change: transform;
 }
 .box {
   border: 1px solid black;
@@ -34,17 +44,16 @@ canvas {
   animation-fill-mode: forwards;
   will-change: transform;
 }
-.emoji {
-  height: 99px;
-  width: 99px;
-  display: none;
-}
-.emoji--active {
-  display: initial;
+.boxCoincidencia {
+  animation: mach 0.5s;
+  animation-iteration-count: 3;
+  animation-fill-mode: forwards;
+  will-change: transform;
 }
 @keyframes abrir {
   from {
     transform: rotateY(0deg);
+    background-color: rgb(255, 255, 14);
   }
   to {
     transform: rotateY(360deg);
@@ -54,8 +63,25 @@ canvas {
 @keyframes cerrar {
   from {
     transform: rotateY(360deg);
+    background-color: Red;
   }
   to {
     transform: rotateY(0deg);
+  }
+}
+@keyframes mach {
+  from {
+    background-color: green;
+  }
+  to {
+    background-color: rgba(0, 128, 0, 0.11);
+  }
+}
+@keyframes win {
+  from {
+    transform: rotateY(0deg) translate(0) scale(1);
+  }
+  to {
+    transform: rotateY(180deg) translate(1024px) scale(0.5);
   }
 }
