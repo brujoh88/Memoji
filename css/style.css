@@ -6,10 +6,34 @@ body {
   /* justify-content: center; */
   flex-direction: column;
 }
+.play {
+  position: absolute;
+  top: 500px;
+  z-index: 10;
+  background: rgb(43, 226, 52);
+  padding: 40px 100px;
+  font-size: xx-large;
+  border: 1px solid black;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.play:hover {
+  background: rgb(7, 153, 14);
+}
+.none {
+  display: none;
+}
 header {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+.container__time {
+  border: 1px solid black;
+  font-size: 50px;
+  margin: 0 0 25px 0;
+  padding: 10px;
+  background: rgb(255, 255, 255);
 }
 canvas {
   position: absolute;

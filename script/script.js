@@ -1,5 +1,9 @@
 /* -------------------DECLARACIONES DE VARIABLES GLOBALES---------------------------- *\
 /* -------------------TRAER ELEMENTOS DEL DOM E IMAGENES----------------------------- */
+var CONT_M = document.getElementById("min");
+var CONT_S = document.getElementById("seg");
+var CONT_MS = document.getElementById("mseg");
+var PLAY = document.getElementById("iniciar");
 var BOX = document.getElementsByClassName("box");
 var CONT_BOX = document.getElementsByClassName("container__game");
 var tablero = document.getElementById("tablero");
@@ -48,8 +52,17 @@ var activos = 0; //tarjetas visibles
 var tarjetasActivas = [,]; // Memoria para tarjetas visibles
 var siguienteBox = false;
 var mach = 0;
+var cont_m = 0;
+var cont_s = 0;
+var cont_ms = 0;
+var run;
 
 /* -------------------FIN DECLARACION DE VARIABLES---------------------------------*/
+
+/* -------------------CRONOMETRO INICIAL---------------------------------*/
+CONT_MS.innerHTML = `${cont_ms}0 ms`;
+CONT_S.innerHTML = `${cont_s}0 s :`;
+CONT_M.innerHTML = `${cont_m}0 m :`;
 
 /* -------------------UBICACION RANDOM DE LAS IMAGENES---------------------------*\
 /---------------------SE HACE EN DOS PARTES 32 y 32------------------------------*/
@@ -74,36 +87,74 @@ for (let i = 32; i < 64; i++) {
 }
 /* ------------------------------------FIN RANDOM-----------------------------------*/
 
+/* -----------A LA ESPERA DE INICIAR AL BOTON PLAY---------------------------------*/
+PLAY.addEventListener("click", iniciar);
+
 /* -------------------ESCUCHA DE LOS DISTINTOS BOX---------------------------- */
-for (let i = 0; i < 64; i++) {
-  BOX[i].addEventListener("click", () => {
-    if (!BOX[i].classList.contains("boxActivo") && siguienteBox === false) {
-      //¿No contiene la clase boxActivo?
-      posicion = i;
-      if (activos < 2) {
-        activar();
-        tarjetasActivas[activos] = posicion;
-        activos++;
-        crearEmoji();
-        if (
-          random[tarjetasActivas[0]] === random[tarjetasActivas[1]] &&
-          activos === 2
-        ) {
-          BOX[tarjetasActivas[0]].classList.add("boxCoincidencia");
-          BOX[tarjetasActivas[1]].classList.add("boxCoincidencia");
-          activos = 0;
-          mach++;
-          gameOver();
-          //Lanzar funcion de Exito(coincidencia) y cuantificar a 32 IMG
-        } else if (activos === 2) {
-          siguienteBox = true;
-          setTimeout(seleccionEliminar, 500);
+function iniciar() {
+  PLAY.classList.add("none");
+  cronometro();
+  for (let i = 0; i < 64; i++) {
+    BOX[i].addEventListener("click", () => {
+      if (!BOX[i].classList.contains("boxActivo") && siguienteBox === false) {
+        //¿No contiene la clase boxActivo?
+        posicion = i;
+        if (activos < 2) {
+          activar();
+          tarjetasActivas[activos] = posicion;
+          activos++;
+          crearEmoji();
+          if (
+            random[tarjetasActivas[0]] === random[tarjetasActivas[1]] &&
+            activos === 2
+          ) {
+            BOX[tarjetasActivas[0]].classList.add("boxCoincidencia");
+            BOX[tarjetasActivas[1]].classList.add("boxCoincidencia");
+            activos = 0;
+            mach++;
+            gameOver();
+            //Lanzar funcion de Exito(coincidencia) y cuantificar a 32 IMG
+          } else if (activos === 2) {
+            siguienteBox = true;
+            setTimeout(seleccionEliminar, 500);
+          }
         }
       }
-    }
-  });
+    });
+  }
 }
+
 /* ---------------------FIN ESCUCHA------------------------------------------- */
+function cronometro() {
+  run = setInterval(startCrono, 10);
+}
+function startCrono() {
+  if (cont_ms === 99) {
+    cont_ms = 0;
+    cont_s++;
+    if (cont_s === 60) {
+      cont_m++;
+      cont_s = 0;
+    }
+  }
+  cont_ms++;
+  if (cont_ms < 10) {
+    CONT_MS.innerHTML = `0${cont_ms} ms`;
+  } else {
+    CONT_MS.innerHTML = `${cont_ms} ms`;
+  }
+  if (cont_s < 10) {
+    CONT_S.innerHTML = `0${cont_s} s :`;
+  } else {
+    CONT_S.innerHTML = `${cont_s} s :`;
+  }
+  if (cont_m < 10) {
+    CONT_M.innerHTML = `0${cont_m} m :`;
+  } else {
+    CONT_M.innerHTML = `${cont_m} m :`;
+  }
+}
+
 function seleccionEliminar() {
   for (let i = 0; i < 2; i++) {
     posicion = tarjetasActivas[i];
@@ -133,6 +184,7 @@ function cargarEmoji() {
 }
 function gameOver() {
   if (mach === 32) {
+    clearInterval(run);
     CONT_BOX[0].classList.add("winner");
   }
 }
@@ -156,8 +208,5 @@ function dibujar() {
     } else {
       contexto.drawImage(emoji.imagen, (posicion - 56) * 100, 700);
     }
-
-    /* contexto.drawImage(emoji.imagen, posicion * 10, posicion * 10); */
-  } else {
   }
 }
