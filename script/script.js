@@ -1,5 +1,6 @@
 /* -------------------DECLARACIONES DE VARIABLES GLOBALES---------------------------- *\
 /* -------------------TRAER ELEMENTOS DEL DOM E IMAGENES----------------------------- */
+var TIMMER = document.getElementById("timmer");
 var CONT_M = document.getElementById("min");
 var CONT_S = document.getElementById("seg");
 var CONT_MS = document.getElementById("mseg");
@@ -93,6 +94,7 @@ PLAY.addEventListener("click", iniciar);
 /* -------------------ESCUCHA DE LOS DISTINTOS BOX---------------------------- */
 function iniciar() {
   PLAY.classList.add("none");
+  TIMMER.classList.add("container__time--play");
   cronometro();
   for (let i = 0; i < 64; i++) {
     BOX[i].addEventListener("click", () => {
@@ -185,6 +187,7 @@ function cargarEmoji() {
 function gameOver() {
   if (mach === 32) {
     clearInterval(run);
+    TIMMER.classList.add("container__time--gameOver");
     CONT_BOX[0].classList.add("winner");
   }
 }

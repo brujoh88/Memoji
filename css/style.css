@@ -30,10 +30,20 @@ header {
 }
 .container__time {
   border: 1px solid black;
+  border-radius: 10px 10px 10px 25px;
   font-size: 50px;
   margin: 0 0 25px 0;
   padding: 10px;
-  background: rgb(255, 255, 255);
+  background: rgba(192, 11, 11, 0.7);
+}
+.container__time--play {
+  background: rgba(26, 192, 11, 0.7);
+}
+.container__time--gameOver {
+  animation: titilar 0.5s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  will-change: transform;
 }
 canvas {
   position: absolute;
@@ -107,5 +117,14 @@ canvas {
   }
   to {
     transform: rotateY(180deg) translate(1024px) scale(0.5);
+  }
+}
+@keyframes titilar {
+  from {
+    background: rgb(29, 245, 22);
+  }
+  to {
+    background: rgb(28, 136, 24);
+    transform: translateY(500px) scale(2);
   }
 }
